@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class ApiExceptionHandler {
 
-    @SuppressWarnings("rawtypes")
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handle(ConstraintViolationException e) {
         ErrorResponse errors = new ErrorResponse();

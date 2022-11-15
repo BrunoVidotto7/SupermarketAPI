@@ -28,8 +28,8 @@ import lombok.Setter;
 @Builder
 
 @Entity
-@Table(name="baskets")
-@JsonIdentityInfo(generator= ObjectIdGenerators.PropertyGenerator.class, property="basketProducts")
+@Table(name = "baskets")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "basketProducts")
 public class Basket {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

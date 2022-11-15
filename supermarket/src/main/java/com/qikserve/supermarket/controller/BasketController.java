@@ -72,8 +72,9 @@ public class BasketController {
 
         return new ResponseEntity<>(basket, headers, HttpStatus.CREATED);
     }
+
     @PostMapping("/checkout/{id}")
-    public ResponseEntity<Basket> checkout(@PathVariable ("id") Integer id) {
+    public ResponseEntity<Basket> checkout(@PathVariable("id") Integer id) {
         Basket basket = basketService.loadBaskedById(id);
         basket.setStatus(BasketStatus.CHECKOUT.name());
 
@@ -85,7 +86,7 @@ public class BasketController {
     }
 
     @PostMapping("/pay/{id}")
-    public ResponseEntity<Basket> pay(@PathVariable ("id") Integer id) {
+    public ResponseEntity<Basket> pay(@PathVariable("id") Integer id) {
         Basket basket = basketService.loadBaskedById(id);
         basket.setStatus(BasketStatus.PAID.name());
 

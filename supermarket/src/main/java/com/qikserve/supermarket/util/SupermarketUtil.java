@@ -13,7 +13,9 @@ public class SupermarketUtil {
     }
 
     public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
+        if (places < 0) {
+            throw new IllegalArgumentException();
+        }
 
         long factor = (long) Math.pow(10, places);
         value = value * factor;
@@ -22,6 +24,6 @@ public class SupermarketUtil {
     }
 
     public static double convertPennyToPound(double value) {
-        return value/100D;
+        return value / 100D;
     }
 }

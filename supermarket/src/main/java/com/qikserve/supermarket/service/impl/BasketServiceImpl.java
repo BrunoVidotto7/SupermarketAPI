@@ -23,10 +23,10 @@ public class BasketServiceImpl implements BasketService {
         return basketRepository.findAll();
     }
 
-    public Basket loadBaskedById(Integer id){
+    public Basket loadBaskedById(Integer id) {
         final Optional<Basket> basketOptional = basketRepository.findById(id);
         if (basketOptional.isPresent()) {
-           return basketOptional.get();
+            return basketOptional.get();
         }
         throw new ResourceNotFoundException("Basket not found");
     }
