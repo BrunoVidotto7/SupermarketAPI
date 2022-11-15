@@ -6,6 +6,7 @@ import java.util.Objects;
 import javax.transaction.Transactional;
 import javax.validation.constraints.NotNull;
 
+import com.qikserve.supermarket.dto.BasketForm;
 import com.qikserve.supermarket.dto.BasketProductDto;
 import com.qikserve.supermarket.error.exception.InvalidFormException;
 import com.qikserve.supermarket.error.exception.ResourceNotFoundException;
@@ -71,7 +72,7 @@ public class BasketController {
 
         return new ResponseEntity<>(basket, headers, HttpStatus.CREATED);
     }
-    @GetMapping("/checkout/{id}")
+    @PostMapping("/checkout/{id}")
     public ResponseEntity<Basket> checkout(@PathVariable ("id") Integer id) {
         Basket basket = basketService.loadBaskedById(id);
         basket.setStatus(BasketStatus.CHECKOUT.name());
@@ -83,7 +84,7 @@ public class BasketController {
         return new ResponseEntity<>(basket, headers, HttpStatus.OK);
     }
 
-    @GetMapping("/pay/{id}")
+    @PostMapping("/pay/{id}")
     public ResponseEntity<Basket> pay(@PathVariable ("id") Integer id) {
         Basket basket = basketService.loadBaskedById(id);
         basket.setStatus(BasketStatus.PAID.name());
@@ -153,18 +154,6 @@ public class BasketController {
 
         if (!CollectionUtils.isEmpty(list)) {
             throw new ResourceNotFoundException("Product not found");
-        }
-    }
-
-    public static class BasketForm {
-        private List<BasketProductDto> productBaskets;
-
-        public List<BasketProductDto> getProductBaskets() {
-            return productBaskets;
-        }
-
-        public void setProductBaskets(List<BasketProductDto> productBaskets) {
-            this.productBaskets = productBaskets;
         }
     }
 

@@ -1,5 +1,6 @@
 package com.qikserve.supermarket.handler.impl;
 
+import static com.qikserve.supermarket.util.SupermarketUtil.convertPennyToPound;
 import static com.qikserve.supermarket.util.SupermarketUtil.round;
 import static com.qikserve.supermarket.util.SupermarketUtil.zipToMap;
 
@@ -14,14 +15,13 @@ import com.qikserve.supermarket.model.PromotionType;
 import com.qikserve.supermarket.pojo.Product;
 import com.qikserve.supermarket.pojo.Promotion;
 import com.qikserve.supermarket.service.ProductService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CalculateTotalsHandlerImpl implements CalculateTotalsHandler {
     private final ProductService productService;
 
-    public CalculateTotalsHandlerImpl(@Lazy ProductService productService) {
+    public CalculateTotalsHandlerImpl(ProductService productService) {
         this.productService = productService;
     }
 
@@ -86,7 +86,7 @@ public class CalculateTotalsHandlerImpl implements CalculateTotalsHandler {
         for (Map.Entry<Product, Integer> map : productQuantityMap.entrySet()) {
             Product product = map.getKey();
             Integer quantity = map.getValue();
-            rawTotal += product.getPrice() * quantity;
+            rawTotal += convertPennyToPound(product.getPrice()) * quantity;
         }
         return round(rawTotal, 2);
     }

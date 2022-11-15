@@ -1,0 +1,4 @@
+product:
+  service:
+    value: supermarket-test
+    url: http://localhost:9561

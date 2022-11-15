@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-@FeignClient(value = "${feign.value}", url = "${feign.url}", configuration = ClientConfiguration.class)
+@FeignClient(value = "${product.service.value}", url = "${product.service.url}", configuration = ClientConfiguration.class)
 public interface ProductClient {
     @RequestMapping(method = RequestMethod.GET, value = "/products")
     ResponseEntity<List<Product>> getProducts();

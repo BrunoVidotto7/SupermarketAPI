@@ -11,6 +11,7 @@ spring:
       path: /h2-console
 
 #Feign client settings
-feign:
-  value: supermarket
-  url: http://localhost:8081
+product:
+  service:
+    value: supermarket-test
+    url: http://localhost:8081

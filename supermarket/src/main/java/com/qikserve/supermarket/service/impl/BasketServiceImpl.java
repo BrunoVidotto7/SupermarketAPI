@@ -1,6 +1,5 @@
 package com.qikserve.supermarket.service.impl;
 
-import java.time.LocalDate;
 import java.util.Optional;
 import javax.transaction.Transactional;
 
@@ -34,7 +33,6 @@ public class BasketServiceImpl implements BasketService {
 
     @Override
     public Basket create(Basket basket) {
-        basket.setDateCreated(LocalDate.now());
         return basketRepository.save(basket);
     }
 

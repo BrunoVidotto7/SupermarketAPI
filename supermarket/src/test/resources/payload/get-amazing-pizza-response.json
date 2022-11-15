@@ -1,0 +1,13 @@
+{
+  "id": "Dwt5F7KAhi",
+  "name": "Amazing Pizza!",
+  "price": 1099,
+  "promotions": [
+    {
+      "id": "ibt3EEYczW",
+      "type": "QTY_BASED_PRICE_OVERRIDE",
+      "required_qty": 2,
+      "price": 1799
+    }
+  ]
+}
