@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    name: supermarketdb
+  jpa:
+    show-sql: true
+
+#H2 settings
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+#Feign client settings
+feign:
+  value: supermarket
+  url: http://localhost:8081
