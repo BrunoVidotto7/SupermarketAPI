@@ -1,32 +1,25 @@
 package com.qikserve.supermarket.controller;
 
 import static com.qikserve.supermarket.mocks.ProductMocks.setupAllProductMockResponse;
-import static com.qikserve.supermarket.mocks.ProductMocks.setupAmazingBurgerMockResponse;
 import static com.qikserve.supermarket.mocks.ProductMocks.setupAmazingPizzaMockResponse;
-import static com.qikserve.supermarket.mocks.ProductMocks.setupAmazingSaladMockResponse;
-import static com.qikserve.supermarket.mocks.ProductMocks.setupBoringFriesMockResponse;
+import static com.qikserve.supermarket.mocks.ProductMocks.setupNotFoundMockResponse;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.util.StreamUtils.copyToString;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.WireMockServer;
 import com.qikserve.supermarket.config.WireMockConfig;
-import com.qikserve.supermarket.dto.BasketForm;
-import com.qikserve.supermarket.handler.CalculateTotalsHandler;
-import com.qikserve.supermarket.service.BasketProductService;
-import com.qikserve.supermarket.service.BasketService;
-import com.qikserve.supermarket.service.ExpectedTotalsService;
-import com.qikserve.supermarket.service.ProductService;
+import com.qikserve.supermarket.error.exception.SupermarketResponseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -55,6 +48,7 @@ class ProductControllerIntegrationTest {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
         setupAllProductMockResponse(mockProductService);
         setupAmazingPizzaMockResponse(mockProductService);
+        setupNotFoundMockResponse(mockProductService);
     }
 
     @Test

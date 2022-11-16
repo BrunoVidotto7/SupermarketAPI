@@ -1,5 +1,6 @@
 package com.qikserve.supermarket.mocks;
 
+import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static org.springframework.util.StreamUtils.copyToString;
 
 import java.io.IOException;
@@ -13,7 +14,7 @@ import org.springframework.http.MediaType;
 public class ProductMocks {
     public static void setupAllProductMockResponse(WireMockServer mockServer) throws IOException {
         mockServer.stubFor(WireMock.get(WireMock.urlEqualTo("/products"))
-            .willReturn(WireMock.aResponse()
+            .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody(
@@ -28,7 +29,7 @@ public class ProductMocks {
 
     public static void setupAmazingPizzaMockResponse(WireMockServer mockServer) throws IOException {
         mockServer.stubFor(WireMock.get(WireMock.urlEqualTo("/products/Dwt5F7KAhi"))
-            .willReturn(WireMock.aResponse()
+            .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody(
@@ -43,7 +44,7 @@ public class ProductMocks {
 
     public static void setupAmazingBurgerMockResponse(WireMockServer mockServer) throws IOException {
         mockServer.stubFor(WireMock.get(WireMock.urlEqualTo("/products/PWWe3w1SDU"))
-            .willReturn(WireMock.aResponse()
+            .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody(
@@ -58,7 +59,7 @@ public class ProductMocks {
 
     public static void setupAmazingSaladMockResponse(WireMockServer mockServer) throws IOException {
         mockServer.stubFor(WireMock.get(WireMock.urlEqualTo("/products/C8GDyLrHJb"))
-            .willReturn(WireMock.aResponse()
+            .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody(
@@ -73,7 +74,7 @@ public class ProductMocks {
 
     public static void setupBoringFriesMockResponse(WireMockServer mockServer) throws IOException {
         mockServer.stubFor(WireMock.get(WireMock.urlEqualTo("/products/4MB7UfpTQs"))
-            .willReturn(WireMock.aResponse()
+            .willReturn(aResponse()
                 .withStatus(HttpStatus.OK.value())
                 .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
                 .withBody(
@@ -84,5 +85,11 @@ public class ProductMocks {
                 )
             )
         );
+    }
+
+    public static void setupNotFoundMockResponse(WireMockServer mockServer) throws IOException {
+        mockServer.stubFor(WireMock.get(WireMock.urlEqualTo("/products/wrongId"))
+            .willReturn(aResponse()
+                .withStatus(500)));
     }
 }

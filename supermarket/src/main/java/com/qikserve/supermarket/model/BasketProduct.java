@@ -26,7 +26,6 @@ public class BasketProduct {
     private BasketProductPK pk;
 
     @Column(nullable = false)
-//    @Enumerated(EnumType.STRING)
     private String productName;
 
     @Column(nullable = false)

@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 
 import com.qikserve.supermarket.dto.BasketForm;
 import com.qikserve.supermarket.dto.BasketProductDto;
+import com.qikserve.supermarket.error.exception.BasketAlreadyClosedException;
 import com.qikserve.supermarket.error.exception.InvalidFormException;
 import com.qikserve.supermarket.error.exception.ResourceNotFoundException;
 import com.qikserve.supermarket.model.Basket;
@@ -28,6 +29,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,7 +62,7 @@ public class BasketController {
         basket.setStatus(BasketStatus.OPEN.name());
         basketService.create(basket);
 
-        List<BasketProduct> basketProducts = loadBasketProducts(formDtos, basket);
+        final List<BasketProduct> basketProducts = loadBasketProducts(formDtos, basket);
         basket.setBasketProducts(basketProducts);
 
         ExpectedTotals expectedTotals = loadExpectedTotals(basket);
@@ -73,7 +75,38 @@ public class BasketController {
         return new ResponseEntity<>(basket, headers, HttpStatus.CREATED);
     }
 
-    @PostMapping("/checkout/{id}")
+    @PutMapping("/add/{id}")
+    @Transactional
+    public ResponseEntity<Basket> addItems(@RequestBody BasketForm form, @PathVariable("id") Integer id) {
+        validateForm(form);
+        final var formDtos = form.getProductBaskets();
+        final var basket = basketService.loadBaskedById(id);
+
+        handleBasketStatus(basket);
+
+        List<BasketProduct> basketProducts = basket.getBasketProducts();
+        basketProducts.addAll(loadBasketProducts(formDtos, basket));
+
+        ExpectedTotals expectedTotals = loadExpectedTotals(basket);
+        basket.setExpectedTotals(expectedTotals);
+
+        basketService.update(basket);
+
+        HttpHeaders headers = loadUri(basket);
+
+        return new ResponseEntity<>(basket, headers, HttpStatus.OK);
+    }
+
+    private void handleBasketStatus(Basket basket) {
+        if(BasketStatus.PAID.name().equals(basket.getStatus())) {
+            throw new BasketAlreadyClosedException();
+        }
+        if(BasketStatus.CHECKOUT.name().equals(basket.getStatus())) {
+            basket.setStatus(BasketStatus.OPEN.name());
+        }
+    }
+
+    @PutMapping("/checkout/{id}")
     public ResponseEntity<Basket> checkout(@PathVariable("id") Integer id) {
         Basket basket = basketService.loadBaskedById(id);
         basket.setStatus(BasketStatus.CHECKOUT.name());
@@ -85,7 +118,7 @@ public class BasketController {
         return new ResponseEntity<>(basket, headers, HttpStatus.OK);
     }
 
-    @PostMapping("/pay/{id}")
+    @PutMapping("/pay/{id}")
     public ResponseEntity<Basket> pay(@PathVariable("id") Integer id) {
         Basket basket = basketService.loadBaskedById(id);
         basket.setStatus(BasketStatus.PAID.name());

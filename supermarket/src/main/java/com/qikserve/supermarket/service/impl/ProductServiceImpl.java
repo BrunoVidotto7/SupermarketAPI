@@ -23,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
         if (productsResponse.getStatusCode().is2xxSuccessful() && productsResponse.hasBody()) {
             return productsResponse.getBody();
         }
-        throw new SupermarketResponseException("Error to get response from Supermarket API");
+        throw new SupermarketResponseException("Error to get response from Supermarket API, please check your URL.");
     }
 
     public Product getProductById(String productId) {
