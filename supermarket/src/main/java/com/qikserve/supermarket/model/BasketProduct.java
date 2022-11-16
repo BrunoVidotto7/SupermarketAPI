@@ -40,7 +40,7 @@ public class BasketProduct {
             return false;
         }
         BasketProduct that = (BasketProduct) o;
-        return pk != null && Objects.equals(pk, that.pk);
+        return productName != null && Objects.equals(productName, that.productName);
     }
 
     @Override

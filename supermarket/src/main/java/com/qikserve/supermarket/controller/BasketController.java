@@ -56,7 +56,7 @@ public class BasketController {
     @Transactional
     public ResponseEntity<Basket> create(@RequestBody BasketForm form) {
         validateForm(form);
-        final var formDtos = form.getProductBaskets();
+        final List<BasketProductDto> formDtos = form.getProductBaskets();
 
         Basket basket = new Basket();
         basket.setStatus(BasketStatus.OPEN.name());
@@ -79,13 +79,13 @@ public class BasketController {
     @Transactional
     public ResponseEntity<Basket> addItems(@RequestBody BasketForm form, @PathVariable("id") Integer id) {
         validateForm(form);
-        final var formDtos = form.getProductBaskets();
-        final var basket = basketService.loadBaskedById(id);
+        final List<BasketProductDto> formDtos = form.getProductBaskets();
+        final Basket basket = basketService.loadBaskedById(id);
 
         handleBasketStatus(basket);
 
-        List<BasketProduct> basketProducts = basket.getBasketProducts();
-        basketProducts.addAll(loadBasketProducts(formDtos, basket));
+        List<BasketProduct> formBasketProducts = loadBasketProducts(formDtos, basket);
+        basket.setBasketProducts(loadNewToBasketItems(basket, formBasketProducts));
 
         ExpectedTotals expectedTotals = loadExpectedTotals(basket);
         basket.setExpectedTotals(expectedTotals);
@@ -97,11 +97,37 @@ public class BasketController {
         return new ResponseEntity<>(basket, headers, HttpStatus.OK);
     }
 
+    private List<BasketProduct> loadNewToBasketItems(Basket basket, List<BasketProduct> formBasketProducts) {
+        List<BasketProduct> basketProducts = basket.getBasketProducts();
+        return addToBasket(formBasketProducts, basketProducts);
+    }
+
+    private List<BasketProduct> addToBasket(List<BasketProduct> formBasketProducts, List<BasketProduct> basketProducts) {
+        if (basketProducts != null) {
+            for (BasketProduct formProduct : formBasketProducts) {
+                if(basketProducts.contains(formProduct)) {
+                    basketProducts.forEach(product -> updateQuantityIfSameProducts(product, formProduct));
+                } else {
+                    basketProducts.add(formProduct);
+                }
+            }
+            return basketProducts;
+        } else {
+            return new ArrayList<>(formBasketProducts);
+        }
+    }
+
+    private void updateQuantityIfSameProducts(BasketProduct product, BasketProduct formProduct) {
+        if (product.equals(formProduct)) {
+            product.setQuantity(product.getQuantity() + formProduct.getQuantity());
+        }
+    }
+
     private void handleBasketStatus(Basket basket) {
-        if(BasketStatus.PAID.name().equals(basket.getStatus())) {
+        if (BasketStatus.PAID.name().equals(basket.getStatus())) {
             throw new BasketAlreadyClosedException();
         }
-        if(BasketStatus.CHECKOUT.name().equals(basket.getStatus())) {
+        if (BasketStatus.CHECKOUT.name().equals(basket.getStatus())) {
             basket.setStatus(BasketStatus.OPEN.name());
         }
     }

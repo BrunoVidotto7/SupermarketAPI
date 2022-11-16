@@ -26,8 +26,7 @@
 ---
 ## Example
 Start the running the class *SupermarketApplication.java*.\
-Create a basket with 4 Amazing pizzas, 2 Amazing burger and 1 Amazing salad.\
-Send a POST request to http://localhost:8080/api/baskets/create passing the following JSON as body parameter:
+Create a basket with 4 Amazing pizzas, 2 Amazing burger and 1 Amazing salad sending a POST request to http://localhost:8080/api/baskets/create passing the following JSON as body parameter:
 
 ```json
 {
