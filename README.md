@@ -11,22 +11,21 @@
 
 ## Endpoints
 
-<ul>
-  <li>/api/baskets - GET - list all baskets</li>
-  <li>/api/baskets/create - POST - create a new basket (required a form as body)</li>
-  <li>/api/baskets/add/{id} - PUT - add items into a already existent basket (required a form as body)</li>
-  <li>/api/baskets/checkout/{id} - PUT - change basket status to CHECKOUT</li>
-  <li>/api/baskets/pay/{id} - PUT - change basket status to PAID</li>
-  <li>/api/baskets/{id} - GET - get basket using id</li><br>
 
-  <li>/api/products - GET - list all products</li>
-  <li>/api/products/{productId} - GET - get product using id</li><br>
-</ul>
+```/api/baskets``` - **GET** - list all baskets\
+```/api/baskets/create``` - **POST** - create a new basket (required a form as body)\
+```/api/baskets/add/{id}``` - **PATCH** - add items into a already existent basket (required a form as body)\
+```/api/baskets/checkout/{id}``` - **PATCH** - change basket status to CHECKOUT\
+```/api/baskets/pay/{id}``` - **PATCH** - change basket status to PAID\
+```/api/baskets/{id}``` - **GET** - get basket using id<br>
+
+  ```/api/products``` - **GET** - list all products\
+  ```/api/products/{productId}``` - **GET** - get product using id<br>
 
 ---
 ## Example
 Start the running the class *SupermarketApplication.java*.\
-Create a basket with 4 Amazing pizzas, 2 Amazing burger and 1 Amazing salad sending a POST request to http://localhost:8080/api/baskets/create passing the following JSON as body parameter:
+Create a basket with 4 Amazing pizzas, 2 Amazing burger and 1 Amazing salad sending a **POST** request to http://localhost:8080/api/baskets/create passing the following JSON as body parameter:
 
 ```json
 {
@@ -46,7 +45,7 @@ Create a basket with 4 Amazing pizzas, 2 Amazing burger and 1 Amazing salad send
   ]
 } 
 ```
-Add 5 boring fries to this existent basket sending a PUT request to http://localhost:8080/api/baskets/add/1 passing the following JSON as body parameter:
+Add 5 boring fries to this existent basket sending a **PATCH** request to http://localhost:8080/api/baskets/add/1 passing the following JSON as body parameter:
 ```json
 {
   "productBaskets": [
@@ -57,9 +56,9 @@ Add 5 boring fries to this existent basket sending a PUT request to http://local
   ]
 } 
 ```
-Checkout the basket sending a PUT request to http://localhost:8080/api/baskets/checkout/1
+Checkout the basket sending a **PATCH** request to http://localhost:8080/api/baskets/checkout/1
 
-Check the basket informations sending a GET request to  http://localhost:8080/api/baskets/1<br>
+Check the basket informations sending a **GET** request to  http://localhost:8080/api/baskets/1<br>
 See the following response:
 ```json
 {

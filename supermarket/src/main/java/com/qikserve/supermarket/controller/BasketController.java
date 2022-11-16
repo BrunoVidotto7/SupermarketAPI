@@ -27,6 +27,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -75,7 +76,7 @@ public class BasketController {
         return new ResponseEntity<>(basket, headers, HttpStatus.CREATED);
     }
 
-    @PutMapping("/add/{id}")
+    @PatchMapping ("/add/{id}")
     @Transactional
     public ResponseEntity<Basket> addItems(@RequestBody BasketForm form, @PathVariable("id") Integer id) {
         validateForm(form);
@@ -132,7 +133,7 @@ public class BasketController {
         }
     }
 
-    @PutMapping("/checkout/{id}")
+    @PatchMapping("/checkout/{id}")
     public ResponseEntity<Basket> checkout(@PathVariable("id") Integer id) {
         Basket basket = basketService.loadBaskedById(id);
         basket.setStatus(BasketStatus.CHECKOUT.name());
@@ -144,7 +145,7 @@ public class BasketController {
         return new ResponseEntity<>(basket, headers, HttpStatus.OK);
     }
 
-    @PutMapping("/pay/{id}")
+    @PatchMapping("/pay/{id}")
     public ResponseEntity<Basket> pay(@PathVariable("id") Integer id) {
         Basket basket = basketService.loadBaskedById(id);
         basket.setStatus(BasketStatus.PAID.name());
