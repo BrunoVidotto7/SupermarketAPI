@@ -150,6 +150,35 @@ class BasketControllerIntegrationTest {
             );
     }
 
+    @Test
+    @Order(5)
+    void whenCallListAllBasketsMethod_thenAllBasketsAreReturned() throws Exception {
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/baskets/");
+        mockMvc.perform(builder).andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(
+                    copyToString(
+                        BasketControllerIntegrationTest.class.getClassLoader().getResourceAsStream("payload/all-baskets-response.json"),
+                        Charset.defaultCharset()
+                    )
+                )
+            );
+    }
+
+    @Test
+    @Order(6)
+    void whenCallGetBasketByIdMethod_thenARequestedBasketIsReturned() throws Exception {
+        Integer id = 1;
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.get("/api/baskets/{id}", id);
+        mockMvc.perform(builder).andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(
+                    copyToString(
+                        BasketControllerIntegrationTest.class.getClassLoader().getResourceAsStream("payload/paid-basket-response.json"),
+                        Charset.defaultCharset()
+                    )
+                )
+            );
+    }
+
 
     private BasketForm loadBasketForm() {
         BasketForm form = new BasketForm();
