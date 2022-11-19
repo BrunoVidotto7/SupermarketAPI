@@ -1,5 +1,10 @@
 # Supermarket API
 
+&nbsp;
+[![Continuos Integration with Github](https://github.com/BrunoVidotto7/MicroservicesJava/actions/workflows/docker-publish.yml/badge.svg?branch=dockerizing)](https://github.com/BrunoVidotto7/MicroservicesJava/actions/workflows/docker-publish.yml)
+
+---
+
 <ul>
   <li>Java - 17</li>
   <li>Spring boot - 2.7.5</li>
