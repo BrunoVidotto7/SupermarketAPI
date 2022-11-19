@@ -103,9 +103,27 @@ class BasketControllerIntegrationTest {
 
     @Test
     @Order(2)
+    void whenAddItemsToExistentBasket_thenAItemIsAddedAsExpected() throws Exception {
+        BasketForm form = loadBasketForm();
+        Integer id = 1;
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/api/baskets/add/{id}", id)
+            .contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
+            .characterEncoding("UTF-8").content(this.mapper.writeValueAsString(form));
+        mockMvc.perform(builder).andExpect(status().isOk())
+            .andExpect(MockMvcResultMatchers.content().json(
+                    copyToString(
+                        BasketControllerIntegrationTest.class.getClassLoader().getResourceAsStream("payload/add-items-basket-response.json"),
+                        Charset.defaultCharset()
+                    )
+                )
+            );
+    }
+
+    @Test
+    @Order(3)
     void whenCallCheckoutMethodPassingABasketId_thenABasketStatusIsSetToCheckoutLikeExpected() throws Exception {
         Integer id = 1;
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/api/baskets/checkout/{id}", id);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/api/baskets/checkout/{id}", id);
         mockMvc.perform(builder).andExpect(status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(
                     copyToString(
@@ -117,10 +135,10 @@ class BasketControllerIntegrationTest {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     void whenCallPayMethodPassingABasketId_thenABasketStatusIsSetToPaidLikeExpected() throws Exception {
         Integer id = 1;
-        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.post("/api/baskets/pay/{id}", id);
+        MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/api/baskets/pay/{id}", id);
         mockMvc.perform(builder).andExpect(status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(
                     copyToString(

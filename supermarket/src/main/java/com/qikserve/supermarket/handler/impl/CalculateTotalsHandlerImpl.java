@@ -78,7 +78,7 @@ public class CalculateTotalsHandlerImpl implements CalculateTotalsHandler {
 
             promosTotal += calculatedPromos.stream().mapToDouble(promo -> promo).sum();
         }
-        return promosTotal;
+        return round(promosTotal,2);
     }
 
     private double calculateRawTotal(Map<Product, Integer> productQuantityMap) {

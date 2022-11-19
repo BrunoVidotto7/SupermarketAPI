@@ -64,6 +64,7 @@ public class BasketController {
         basketService.create(basket);
 
         final List<BasketProduct> basketProducts = loadBasketProducts(formDtos, basket);
+        basketProductService.saveAll(basketProducts);
         basket.setBasketProducts(basketProducts);
 
         ExpectedTotals expectedTotals = loadExpectedTotals(basket);
@@ -86,9 +87,11 @@ public class BasketController {
         handleBasketStatus(basket);
 
         List<BasketProduct> formBasketProducts = loadBasketProducts(formDtos, basket);
-        basket.setBasketProducts(loadNewToBasketItems(basket, formBasketProducts));
+        List<BasketProduct> newBasketProducts = loadNewToBasketItems(basket, formBasketProducts);
+        basketProductService.saveAll(newBasketProducts);
+        basket.setBasketProducts(newBasketProducts);
 
-        ExpectedTotals expectedTotals = loadExpectedTotals(basket);
+        ExpectedTotals expectedTotals = loadNewExpectedTotals(basket);
         basket.setExpectedTotals(expectedTotals);
 
         basketService.update(basket);
@@ -181,8 +184,6 @@ public class BasketController {
                 .productName(loadProductName(dto).getName())
                 .quantity(dto.getQuantity())
                 .build();
-
-            basketProductService.create(basketProduct);
             basketProducts.add(basketProduct);
         }
         return basketProducts;
@@ -195,6 +196,14 @@ public class BasketController {
     private ExpectedTotals loadExpectedTotals(Basket basket) {
         final ExpectedTotals expectedTotals = expectedTotalsService.calculateExpectedTotals(basket);
         expectedTotalsService.create(expectedTotals);
+        return expectedTotals;
+    }
+
+    private ExpectedTotals loadNewExpectedTotals(Basket basket) {
+        final ExpectedTotals newExpectedTotals = expectedTotalsService.calculateExpectedTotals(basket);
+        ExpectedTotals expectedTotals = basket.getExpectedTotals();
+        newExpectedTotals.setId(expectedTotals.getId());
+        expectedTotalsService.create(newExpectedTotals);
         return expectedTotals;
     }
 

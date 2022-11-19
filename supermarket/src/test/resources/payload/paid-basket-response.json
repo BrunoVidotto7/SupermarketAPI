@@ -1,26 +1,27 @@
 {
   "basketProducts": [
     {
-      "quantity": 4
+      "productName": "Amazing Pizza!",
+      "quantity": 8
     },
     {
       "productName": "Amazing Burger!",
-      "quantity": 3
+      "quantity": 6
     },
     {
       "productName": "Amazing Salad!",
-      "quantity": 5
+      "quantity": 10
     },
     {
       "productName": "Boring Fries!",
-      "quantity": 1
+      "quantity": 2
     }
   ],
   "id": 1,
   "status": "PAID",
   "expectedTotals": {
-    "rawTotal": 100.87,
-    "totalPromos": 20.47,
-    "totalPayable": 80.4
+    "rawTotal": 201.74,
+    "totalPromos": 50.92,
+    "totalPayable": 150.82
   }
 }

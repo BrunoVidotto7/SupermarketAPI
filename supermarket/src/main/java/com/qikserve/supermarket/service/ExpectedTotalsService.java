@@ -6,5 +6,5 @@ import com.qikserve.supermarket.model.ExpectedTotals;
 public interface ExpectedTotalsService {
     ExpectedTotals create(ExpectedTotals expectedTotals);
 
-    public ExpectedTotals calculateExpectedTotals(Basket basket);
+    ExpectedTotals calculateExpectedTotals(Basket basket);
 }

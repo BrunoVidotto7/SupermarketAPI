@@ -2,6 +2,7 @@ package com.qikserve.supermarket.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -37,7 +38,7 @@ public class Basket {
     private String status;
 
     @JsonManagedReference
-    @OneToMany(mappedBy = "pk.basket")
+    @OneToMany(mappedBy = "pk.basket",  cascade = CascadeType.ALL)
     @Valid
     private List<BasketProduct> basketProducts = new ArrayList<>();
 
