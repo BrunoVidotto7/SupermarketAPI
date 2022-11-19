@@ -41,11 +41,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 @RestController
 @RequestMapping("/api/baskets")
 public class BasketController {
-
-    private final ProductService productService;
     private final BasketService basketService;
-    private final BasketProductService basketProductService;
-    private final ExpectedTotalsService expectedTotalsService;
 
 
     @GetMapping( {"", "/"})
@@ -56,108 +52,32 @@ public class BasketController {
     @PostMapping("/create")
     @Transactional
     public ResponseEntity<Basket> create(@RequestBody BasketForm form) {
-        validateForm(form);
-        final List<BasketProductDto> formDtos = form.getProductBaskets();
-
-        Basket basket = new Basket();
-        basket.setStatus(BasketStatus.OPEN.name());
-        basketService.create(basket);
-
-        final List<BasketProduct> basketProducts = loadBasketProducts(formDtos, basket);
-        basketProductService.saveAll(basketProducts);
-        basket.setBasketProducts(basketProducts);
-
-        ExpectedTotals expectedTotals = loadExpectedTotals(basket);
-        basket.setExpectedTotals(expectedTotals);
-
-        basketService.update(basket);
-
+        final Basket basket = basketService.create(form);
         HttpHeaders headers = loadUri(basket);
-
         return new ResponseEntity<>(basket, headers, HttpStatus.CREATED);
     }
 
     @PatchMapping ("/add/{id}")
     @Transactional
     public ResponseEntity<Basket> addItems(@RequestBody BasketForm form, @PathVariable("id") Integer id) {
-        validateForm(form);
-        final List<BasketProductDto> formDtos = form.getProductBaskets();
-        final Basket basket = basketService.loadBaskedById(id);
-
-        handleBasketStatus(basket);
-
-        List<BasketProduct> formBasketProducts = loadBasketProducts(formDtos, basket);
-        List<BasketProduct> newBasketProducts = loadNewToBasketItems(basket, formBasketProducts);
-        basketProductService.saveAll(newBasketProducts);
-        basket.setBasketProducts(newBasketProducts);
-
-        ExpectedTotals expectedTotals = loadNewExpectedTotals(basket);
-        basket.setExpectedTotals(expectedTotals);
-
-        basketService.update(basket);
-
-        HttpHeaders headers = loadUri(basket);
-
-        return new ResponseEntity<>(basket, headers, HttpStatus.OK);
+        final Basket updatedBasket = basketService.addItems(form, id);
+        HttpHeaders headers = loadUri(updatedBasket);
+        return new ResponseEntity<>(updatedBasket, headers, HttpStatus.OK);
     }
 
-    private List<BasketProduct> loadNewToBasketItems(Basket basket, List<BasketProduct> formBasketProducts) {
-        List<BasketProduct> basketProducts = basket.getBasketProducts();
-        return addToBasket(formBasketProducts, basketProducts);
-    }
-
-    private List<BasketProduct> addToBasket(List<BasketProduct> formBasketProducts, List<BasketProduct> basketProducts) {
-        if (basketProducts != null) {
-            for (BasketProduct formProduct : formBasketProducts) {
-                if(basketProducts.contains(formProduct)) {
-                    basketProducts.forEach(product -> updateQuantityIfSameProducts(product, formProduct));
-                } else {
-                    basketProducts.add(formProduct);
-                }
-            }
-            return basketProducts;
-        } else {
-            return new ArrayList<>(formBasketProducts);
-        }
-    }
-
-    private void updateQuantityIfSameProducts(BasketProduct product, BasketProduct formProduct) {
-        if (product.equals(formProduct)) {
-            product.setQuantity(product.getQuantity() + formProduct.getQuantity());
-        }
-    }
-
-    private void handleBasketStatus(Basket basket) {
-        if (BasketStatus.PAID.name().equals(basket.getStatus())) {
-            throw new BasketAlreadyClosedException();
-        }
-        if (BasketStatus.CHECKOUT.name().equals(basket.getStatus())) {
-            basket.setStatus(BasketStatus.OPEN.name());
-        }
-    }
 
     @PatchMapping("/checkout/{id}")
     public ResponseEntity<Basket> checkout(@PathVariable("id") Integer id) {
-        Basket basket = basketService.loadBaskedById(id);
-        basket.setStatus(BasketStatus.CHECKOUT.name());
-
-        basketService.update(basket);
-
-        final HttpHeaders headers = loadUri(basket);
-
-        return new ResponseEntity<>(basket, headers, HttpStatus.OK);
+        final Basket updatedBasket = basketService.checkout(id);
+        final HttpHeaders headers = loadUri(updatedBasket);
+        return new ResponseEntity<>(updatedBasket, headers, HttpStatus.OK);
     }
 
     @PatchMapping("/pay/{id}")
     public ResponseEntity<Basket> pay(@PathVariable("id") Integer id) {
-        Basket basket = basketService.loadBaskedById(id);
-        basket.setStatus(BasketStatus.PAID.name());
-
-        basketService.update(basket);
-
-        final HttpHeaders headers = loadUri(basket);
-
-        return new ResponseEntity<>(basket, headers, HttpStatus.OK);
+        final Basket updatedBasket = basketService.pay(id);
+        final HttpHeaders headers = loadUri(updatedBasket);
+        return new ResponseEntity<>(updatedBasket, headers, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -174,57 +94,6 @@ public class BasketController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Location", uri);
         return headers;
-    }
-
-    private List<BasketProduct> loadBasketProducts(List<BasketProductDto> formDtos, Basket basket) {
-        final List<BasketProduct> basketProducts = new ArrayList<>();
-        for (BasketProductDto dto : formDtos) {
-            BasketProduct basketProduct = BasketProduct.builder()
-                .pk(new BasketProductPK(basket, dto.getProductId()))
-                .productName(loadProductName(dto).getName())
-                .quantity(dto.getQuantity())
-                .build();
-            basketProducts.add(basketProduct);
-        }
-        return basketProducts;
-    }
-
-    private ProductName loadProductName(BasketProductDto dto) {
-        return ProductName.fromString(productService.getProductById(dto.getProductId()).getName());
-    }
-
-    private ExpectedTotals loadExpectedTotals(Basket basket) {
-        final ExpectedTotals expectedTotals = expectedTotalsService.calculateExpectedTotals(basket);
-        expectedTotalsService.create(expectedTotals);
-        return expectedTotals;
-    }
-
-    private ExpectedTotals loadNewExpectedTotals(Basket basket) {
-        final ExpectedTotals newExpectedTotals = expectedTotalsService.calculateExpectedTotals(basket);
-        ExpectedTotals expectedTotals = basket.getExpectedTotals();
-        newExpectedTotals.setId(expectedTotals.getId());
-        expectedTotalsService.create(newExpectedTotals);
-        return expectedTotals;
-    }
-
-    private void validateForm(BasketForm form) {
-        if (form.getProductBaskets() == null) {
-            throw new InvalidFormException("Invalid form. Please check it and try again.");
-        } else {
-            validateProductBaskets(form);
-        }
-    }
-
-    private void validateProductBaskets(BasketForm form) {
-        final List<BasketProductDto> list = form.getProductBaskets()
-            .stream()
-            .filter(basketProductDto -> Objects.isNull(productService.getProductById(
-                basketProductDto.getProductId()
-            ))).toList();
-
-        if (!CollectionUtils.isEmpty(list)) {
-            throw new ResourceNotFoundException("Product not found");
-        }
     }
 
 }

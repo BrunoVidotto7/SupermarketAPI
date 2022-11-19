@@ -8,7 +8,9 @@ import static com.qikserve.supermarket.mocks.ProductMocks.setupBoringFriesMockRe
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.util.StreamUtils.copyToString;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,6 +23,7 @@ import com.qikserve.supermarket.dto.BasketForm;
 import com.qikserve.supermarket.dto.BasketProductDto;
 import com.qikserve.supermarket.handler.CalculateTotalsHandler;
 import com.qikserve.supermarket.mocks.ProductMocks;
+import com.qikserve.supermarket.model.Basket;
 import com.qikserve.supermarket.service.BasketProductService;
 import com.qikserve.supermarket.service.BasketService;
 import com.qikserve.supermarket.service.ExpectedTotalsService;
@@ -106,15 +109,13 @@ class BasketControllerIntegrationTest {
     void whenAddItemsToExistentBasket_thenAItemIsAddedAsExpected() throws Exception {
         BasketForm form = loadBasketForm();
         Integer id = 1;
+        Basket basket = mapper.readValue(new File("src/test/resources/payload/add-items-basket-response.json"), Basket.class);
         MockHttpServletRequestBuilder builder = MockMvcRequestBuilders.patch("/api/baskets/add/{id}", id)
             .contentType(MediaType.APPLICATION_JSON_VALUE).accept(MediaType.APPLICATION_JSON)
             .characterEncoding("UTF-8").content(this.mapper.writeValueAsString(form));
         mockMvc.perform(builder).andExpect(status().isOk())
             .andExpect(MockMvcResultMatchers.content().json(
-                    copyToString(
-                        BasketControllerIntegrationTest.class.getClassLoader().getResourceAsStream("payload/add-items-basket-response.json"),
-                        Charset.defaultCharset()
-                    )
+                    mapper.writerWithDefaultPrettyPrinter().writeValueAsString(basket)
                 )
             );
     }
