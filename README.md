@@ -2,7 +2,7 @@
 
 &nbsp;
 [![Continuos Integration with Github](https://github.com/BrunoVidotto7/SupermarketAPI/actions/workflows/docker-publish.yml/badge.svg?branch=main)](https://github.com/BrunoVidotto7/SupermarketAPI/actions/workflows/docker-publish.yml)
-[![Coverage](https://img.shields.io/codecov/c/github/BrunoVidotto7/SupermarketAPI)](https://codecov.io/gh/BrunoVidotto7/SupermarketAPI)
+[![codecov](https://codecov.io/gh/BrunoVidotto7/SupermarketAPI/branch/main/graph/badge.svg?token=3UB2CRFBWV)](https://codecov.io/gh/BrunoVidotto7/SupermarketAPI)
 
 ---
 
