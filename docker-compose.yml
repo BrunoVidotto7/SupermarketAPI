@@ -1,0 +1,85 @@
+version: '3.4'
+
+services:
+  # zipkin-server:
+  #   image: openzipkin/zipkin:2.23.2
+  #   restart: always
+  #   ports:
+  #     - 9411:9411
+  #   depends_on:
+  #     - rabbit-mq
+  #   environment:
+  #     RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+  #   networks:
+  #      - supermarket-network
+
+  # rabbit-mq:
+  #   image: rabbitmq:3.8.14-management
+  #   ports:
+  #     - 5672:5672
+  #     - 15672:15672
+  #   networks:
+  #      - supermarket-network
+
+  # naming-server:
+  #   build:
+  #     context: .
+  #     dockerfile: naming-server/Dockerfile
+  #   environment:
+  #     - EUREKA.CLIENT.REGISTERWITHEUREKA=false
+  #     - EUREKA.CLIENT.FETCHREGISTRY=false
+  #   ports:
+  #     - "8761:8761"
+  #   networks:
+  #      - supermarket-network
+
+  # api-gateway:
+  #   image: docker.io/glasscode/api-gateway:V1
+  #   ports:
+  #     - 8765:8765
+  #   depends_on:
+  #     - naming-server
+  #     - rabbit-mq
+  #   environment:
+  #     SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://naming-server:8761/eureka"}}}}'
+  #     SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+  #     RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+  #     SPRING_RABBITMQ_HOST: rabbit-mq
+  #     SPRING_ZIPKIN_SENDER_TYPE: rabbit
+  #   networks:
+  #     - supermarket-network
+
+  supermarket-service:
+    image: glasscode/supermarket-service:V1
+    restart: always
+    build:
+      context: .
+      dockerfile: supermarket/Dockerfile
+    environment:
+      TZ: America/Sao_Paulo
+      SPRING.DATASOURCE.URL: jdbc:h2:mem:tempsupermarketdb
+      SPRING.DATASOURCE.name: supermarketdb
+      SPRING.H2.CONSOLE.ENABLED: true
+      SPRING.H2.CONSOLE.PATH: /h2-console
+      PRODUCT.SERVICE.VALUE: supermarket
+      PRODUCT.SERVICE.URL: http://localhost:8081
+      # SPRING_APPLICATION_JSON: '{"eureka":{"client":{"serviceUrl":{"defaultZone":"http://naming-server:8761/eureka"}}}}'
+      # SPRING.ZIPKIN.BASEURL: http://zipkin-server:9411/
+      # SPRING.FLYWAY.URL: jdbc:mariadb://cambio-db:3308/cambio_service?serverTimezone=UTC
+      # SPRING.FLYWAY.USER: root
+      # SPRING.FLYWAY.PASSWORD: 1234
+      # SPRING.JPA.HIBERNATE.DDLAUTO: none
+      # RABBIT_URI: amqp://guest:guest@rabbit-mq:5672
+      # SPRING_RABBITMQ_HOST: rabbit-mq
+      # SPRING_ZIPKIN_SENDER_TYPE: rabbit
+    ports:
+      - 8080:8080
+    # depends_on:
+    #   - naming-server
+    #   - rabbit-mq
+    networks:
+      - supermarket-network
+
+networks:
+   supermarket-network:
+     driver: bridge
