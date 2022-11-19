@@ -1,20 +1,12 @@
 name: Continuos Integration with Github
 
 on:
-#   schedule:
-#     - cron: '28 0 * * *'
+
   push:
-    branches: [ dockerizing ]
+    branches: [ main ]
     tags: [ 'v*.*.*' ]
   pull_request:
-    branches: [ dockerizing ]
-
-# env:
-#   # Use docker.io for Docker Hub if empty
-#   REGISTRY: ghcr.io
-#   # github.repository as <account>/<repo>
-#   IMAGE_NAME: ${{ github.repository }}
-
+    branches: [ main ]
 
 jobs:
   build:
@@ -41,7 +33,7 @@ jobs:
           distribution: 'adopt'
         
       - name: Build Supermarket Microservice Jar
-        working-directory: ./supermarket-service
+        working-directory: ./supermarket
         run: mvn clean package
         
       - name: Docker compose build
