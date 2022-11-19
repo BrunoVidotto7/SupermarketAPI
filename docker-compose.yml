@@ -59,7 +59,7 @@ services:
       TZ: America/Sao_Paulo
       SPRING.DATASOURCE.URL: jdbc:h2:mem:tempsupermarketdb
       SPRING.DATASOURCE.name: supermarketdb
-      SPRING.H2.CONSOLE.ENABLED: true
+      SPRING.H2.CONSOLE.ENABLED: "true"
       SPRING.H2.CONSOLE.PATH: /h2-console
       PRODUCT.SERVICE.VALUE: supermarket
       PRODUCT.SERVICE.URL: http://localhost:8081
