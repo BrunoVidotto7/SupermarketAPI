@@ -40,8 +40,14 @@ jobs:
         working-directory: .
         run: docker-compose build
         
-      - name: Upload coverage to Codecov
+      - name: Setup Codecov
         uses: codecov/codecov-action@v3
+        
+      - name: Upload coverage to Codecov
+        run: |
+          curl -Os https://uploader.codecov.io/latest/linux/codecov
+          chmod +x codecov
+          ./codecov -t ${CODECOV_TOKEN}
 
       - name: Push to Docker hub container registry
         run: |
