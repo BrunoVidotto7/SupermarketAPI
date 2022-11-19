@@ -1,0 +1,20 @@
+name: API workflow
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Test Supermaket API
+    steps:
+    - uses: actions/checkout@v1
+    
+    - name: Build Supermarket Microservice Jar
+      working-directory: ./supermarket
+      run: mvn clean package
+      
+    - name: Upload coverage reports to Codecov
+      run: |
+        curl -Os https://uploader.codecov.io/latest/linux/codecov
+        chmod +x codecov
+        ./codecov -t ${CODECOV_TOKEN}
