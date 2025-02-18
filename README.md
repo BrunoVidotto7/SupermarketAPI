@@ -96,21 +96,6 @@ See the following response:
 }
 ```
 
-# Follow-up questions
-### How long did you spend on the test?
-I've spend around 16 hours.
-
-### What would you add if you had more time?
-I'd clean up the controller moving all private methods to service, I'd add more unit tests and I'd add a CI/CD pipeline in github.
-
-### How would you improve the product APIs that you had to consume?
-I'd send the price in pound instead of pennies, add a Dockerfile to make create a docker-compose file easy with all apps.
-
-### What did you find most difficult?
-I've found difficult in make the code more clean.
-
-### How did you find the overall experience, any feedback for us?
-In general was a very rich experience. To implement that, I've need to remember a lot of concepts. I believe that with that implementation, you can know a lot about how I code.
 
 
 
